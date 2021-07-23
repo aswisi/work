@@ -1,0 +1,38 @@
+using System;
+					
+public class Program
+{
+	public static void Main()
+	{
+		Console.WriteLine("Enter a number");
+		string number = Console.ReadLine();
+		try
+        {
+            int num = Int32.Parse(number);
+			Mutiples(num);
+        }
+        catch (FormatException)
+        {
+            throw new ArgumentException ("That is not a number");
+        }
+		
+	}
+	
+	public static void Mutiples(int n){
+		if(n < 0){
+			throw new ArgumentOutOfRangeException("Numbers cannot be negative!");
+		}
+		else if(n % 3 == 0 && n % 5 == 0){
+			Console.WriteLine("FizzBuzz");
+		}
+		else if(n % 3 == 0 && n % 5 != 0){
+			Console.WriteLine("Fizz");
+		}
+		else if(n % 3 != 0 && n % 5 == 0){
+			Console.WriteLine("Buzz");
+		}		
+		else{
+			Console.WriteLine(n);
+		}
+	}
+}

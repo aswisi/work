@@ -1,0 +1,104 @@
+﻿using System;
+using System.Xml;
+					
+public class Program
+{
+	public static void Main()
+	{
+		/* below is the code to parse the xml data from GetData function
+             * for each child node data it checks to see if it a palindorme and attached the answer to an output 
+             * xml string*/
+            XmlDocument xdoc = new XmlDocument();
+            string myXml = GetData();
+            // ignoring the xml version line
+            myXml = myXml.Substring(myXml.IndexOf('\n') + 1);
+            xdoc.LoadXml(myXml);
+            XmlNode root = xdoc.FirstChild;
+            string answers = "<? xml version =\"1.0\"?>" + Environment.NewLine + "<answers>" + Environment.NewLine;
+
+            if (root.HasChildNodes)
+            {
+                for (int i = 0; i < root.ChildNodes.Count; i++)
+                {
+                    string name = root.ChildNodes[i].Name;
+                    if (name.Substring(0,4).Equals("data"))// make sure the child node is type data and not anything else
+                    {
+                        var r = IsPalindrome(root.ChildNodes[i].InnerText);
+                        answers += "     <answer" + name.Substring(4,1) + ">" + r + 
+					"</answer" + name.Substring(4, 1) + ">" + Environment.NewLine;
+                    }
+                    
+                    
+                }
+                
+            }
+            answers += "</answers>";
+
+            Console.WriteLine(answers);
+
+
+
+        }
+
+	/* The xml parser has problems converting '&' into data. so for the sake of testing I
+         * ignored it*/  
+        public static string GetData()
+        {
+            var data =
+                "<?xml version=\"1.0\"?>" + Environment.NewLine +
+                "<dataset>" + Environment.NewLine +
+                    "<data1>Don't nod</data1>" + Environment.NewLine +
+                    "<data2>Dogma: I am God</data2>" + Environment.NewLine +
+                    "<data8>Was it Eliot's toilet I saw?</data8>" + Environment.NewLine +
+                    "<data3>Never odd or even</data3>" + Environment.NewLine +
+                    "<data10>How are you era who</data10>" + Environment.NewLine +
+                    "<data4>Too bad – I hid a boot</data4>" + Environment.NewLine +
+                    "<data5>Rats live on no evil star</data5>" + Environment.NewLine +
+                    "<data7>No trace; not one carton</data7>" + Environment.NewLine +
+                    "<data9>Go deliver a dare, vile dog!</data9>" + Environment.NewLine +
+                    //"<data11>Madam, I&m Adam</data11>" + Environment.NewLine +
+                    "<test>This is not data</test>" + Environment.NewLine +
+                "</dataset>";
+
+            return data;
+
+        }
+
+        /* the palindrome is found by setting two pointers to the begining and the end of the string.
+         * if both pointers match, the left pointer is incremented and the right is decremented. 
+         * if current pointer is white space or punctuation then it is ignored and the coresponding pointer is 
+         * incremented. 
+         * */
+        public static bool IsPalindrome(string data)
+        {
+            var answer = true;
+
+            data = data.ToLower();
+            int left = 0;
+            int right = data.Length - 1;
+
+            while(left <= right)
+            {
+                if (data[left].Equals(data[right]))
+                {
+                    left++;
+                    right--;
+                }
+                else if (Char.IsPunctuation(data[left]) | Char.IsWhiteSpace(data[left]))
+                {
+                    left++;
+                }
+                else if (Char.IsPunctuation(data[right]) | Char.IsWhiteSpace(data[right]))
+                {
+                    right--;
+                }
+                else
+                {
+                    answer = false;
+                    left = right + 1;
+                }
+
+            }
+            return answer;
+        }
+}

@@ -1,0 +1,4 @@
+1. SELECT CustomerName FROM customers WHERE Country='Sweden' OR Country='Germany'
+2. SELECT ContactName, City FROM customers ORDER BY City DESC
+3. SELECT ContactName From Customers GROUP BY Country 
+   HAVING COUNT(ContactName) > 1

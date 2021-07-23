@@ -1,0 +1,47 @@
+using System;
+using System.Net;
+using System.IO;
+using Newtonsoft.Json.Linq;
+using System.Collections;
+					
+public class Program
+{
+	public static void Main()
+	{
+		/* code to retrieve the qoutes from the api*/
+            string url = String.Format("https://api.fisenko.net/quotes/author/4PO19Pf6DR?l=en&p=1&c=5");
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls13;
+
+            WebRequest request = WebRequest.Create(url);
+            request.Method = "GET";
+            HttpWebResponse responseObj = (HttpWebResponse)request.GetResponse();
+
+            string res;
+            using (Stream stream = responseObj.GetResponseStream())
+            {
+                StreamReader sr = new StreamReader(stream);
+                res = sr.ReadToEnd();
+                sr.Close();
+            }
+
+            /*the code below parses the json objects and adds each quote to an arraylist.
+             * the sorted quotes are printed to console*/
+            ArrayList orderedQuotes = new ArrayList();
+            var quotes = JArray.Parse(res);
+
+            Console.WriteLine("Author: {0}", quotes[0]["author"].ToString());
+
+            for (int i = 0; i < quotes.Count; i++)
+            {
+                orderedQuotes.Add(quotes[i]["text"].ToString());
+            }
+
+            orderedQuotes.Sort();
+
+            foreach (var q in orderedQuotes)
+            {
+                Console.WriteLine(q);
+            }
+	}
+}
